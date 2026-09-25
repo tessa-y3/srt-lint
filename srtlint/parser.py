@@ -4,6 +4,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
+from ._blocks import split_blocks
+
 TIMESTAMP_RE = re.compile(r"^(\d{1,2}):(\d{2}):(\d{2}),(\d{3})$")
 
 
@@ -58,31 +60,9 @@ class Cue:
         return "\n".join(self.lines)
 
 
-def _split_blocks(content: str):
-    """Split file text into (start_line, lines) blocks on blank lines."""
-    content = content.replace("\r\n", "\n").replace("\r", "\n")
-    lines = content.split("\n")
-
-    blocks = []
-    current = []
-    start_line = 1
-    for i, line in enumerate(lines, start=1):
-        if line.strip() == "":
-            if current:
-                blocks.append((start_line, current))
-                current = []
-        else:
-            if not current:
-                start_line = i
-            current.append(line)
-    if current:
-        blocks.append((start_line, current))
-    return blocks
-
-
 def parse(content: str) -> list:
     """Parse SRT text into a list of Cue objects, or raise SubtitleError."""
-    blocks = _split_blocks(content)
+    blocks = split_blocks(content)
 
     cues = []
     last_end_ms = -1

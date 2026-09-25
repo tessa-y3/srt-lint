@@ -72,11 +72,29 @@ Hello there.
 General Kenobi.
 ```
 
+## WebVTT
+
+`srtlint.vtt` parses WebVTT files (`WEBVTT` header, optional cue
+identifiers, `HH:MM:SS.mmm` timestamps with optional hours, `NOTE`
+comment blocks). There is no pretty printer or CLI support for VTT
+yet -- only `vtt.parse()` as a library call:
+
+```python
+from srtlint.vtt import parse
+
+with open("movie.vtt", encoding="utf-8") as f:
+    cues = parse(f.read())
+```
+
+Unlike SRT, overlapping cues are valid WebVTT (that's how simultaneous
+captions are expressed), so the VTT parser doesn't reject them the way
+the SRT parser does.
+
 ## Status
 
-Early. Only the SRT format is handled so far -- see the roadmap in the
-issue tracker for what's planned next (WebVTT support, a diff mode,
-overlap/gap warnings that don't hard-fail parsing).
+Early. See the roadmap in the issue tracker for what's planned next
+(a printer and CLI entry point for WebVTT, a diff mode, overlap/gap
+warnings that don't hard-fail SRT parsing).
 
 ## Requirements
 
